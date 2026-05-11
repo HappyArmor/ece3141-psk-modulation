@@ -112,8 +112,8 @@ for idx = 1:length(M_list)
         
     elseif M == 8
         % 8-PSK with Gray mapping
-        P_s = 2 .* Qfunc(sqrt(2 .* EbN0 .* M) .* sin(pi ./ M));
-        P_b = P_s ./ M;
+        P_s = 2 .* Qfunc(sqrt(2 .* EbN0 .* log2(M)) .* sin(pi ./ log2(M)));
+        P_b = P_s ./ log2(M);
     end
 
    % plot bit error probability
