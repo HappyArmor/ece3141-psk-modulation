@@ -9,9 +9,6 @@ M_list = [2 4 8];
 EbN0_dB = 0:0.1:10;
 EbN0 = 10.^(EbN0_dB/10);
 
-% Q function
-Qfunc = @(x) 0.5 .* erfc(x ./ sqrt(2));
-
 % line styles
 lineStyles = {'b-', 'r--', 'k-.'};
 
@@ -30,13 +27,31 @@ title(axPb, 'Bit Error Probability');
 xlabel(axPb, 'E_b/N_0 (dB)');
 ylabel(axPb, 'P_b');
 
-% symbol error probability plot
+% % symbol error probability plot
 axPs = nexttile(tl, 2);
 hold(axPs, 'on');
 grid(axPs, 'on');
 title(axPs, 'Symbol Error Probability');
 xlabel(axPs, 'E_b/N_0 (dB)');
 ylabel(axPs, 'P_s');
+
+% symbol error probability plot
+% axPs = nexttile(tl, 2);
+% hold(axPs, 'on');
+% grid(axPs, 'on');
+% grid(axPs, 'minor');
+% 
+% % use logarithmic y-axis for error probability
+% set(axPs, 'YScale', 'log');
+% 
+% title(axPs, 'Symbol Error Probability');
+% xlabel(axPs, 'E_b/N_0 (dB)');
+% ylabel(axPs, 'Symbol Error Probability P_s');
+% 
+% % optional but recommended for probability plots
+% ylim(axPs, [1e-6 1]);
+
+%
 
 % waveform plot, span two columns
 axWave = nexttile(tl, 3, [1 2]);
@@ -102,19 +117,21 @@ for idx = 1:length(M_list)
     
     if M == 2
         % 2-PSK / BPSK
-        P_b = Qfunc(sqrt(2 .* EbN0));
+        P_b = qfunc(sqrt(2 * EbN0));
         P_s = P_b;
-    
+
     elseif M == 4
         % 4-PSK / QPSK, using the lab sheet formula
-        P_b = Qfunc(sqrt(2 .* EbN0));
+        P_b = qfunc(sqrt(2 * EbN0));
         P_s = erfc(sqrt(EbN0));
-        
+
     elseif M == 8
-        % 8-PSK with Gray mapping
-        P_s = 2 .* Qfunc(sqrt(2 .* EbN0 .* log2(M)) .* sin(pi ./ log2(M)));
-        P_b = P_s ./ log2(M);
+    % 8-PSK with Gray mapping
+      k = log2(M);
+      P_s = 2 .* qfunc(sqrt(2 .* k .* EbN0) .* sin(pi ./ M));
+      P_b = P_s ./ k;
     end
+
 
    % plot bit error probability
     semilogy(axPb, EbN0_dB, P_b, lineStyles{idx}, ...
