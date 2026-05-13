@@ -126,9 +126,10 @@ for idx = 1:length(M_list)
         P_s = erfc(sqrt(EbN0));
 
     elseif M == 8
-        % 8-PSK with Gray mapping
-        P_s = 2 .* qfunc(sqrt(2 .* EbN0 .* log2(M)) .* sin(pi ./ M));
-        P_b = P_s ./ log2(M);
+    % 8-PSK with Gray mapping
+      k = log2(M);
+      P_s = 2 .* qfunc(sqrt(2 .* k .* EbN0) .* sin(pi ./ M));
+      P_b = P_s ./ k;
     end
 
 
